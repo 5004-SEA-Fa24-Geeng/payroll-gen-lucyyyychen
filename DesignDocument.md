@@ -6,10 +6,77 @@ This document is meant to provide a tool for you to demonstrate the design proce
 
 ## (INITIAL DESIGN): Class Diagram
 
-Place your class diagram below. Make sure you check the fil in the browser on github.com to make sure it is rendering correctly. If it is not, you will need to fix it. As a reminder, here is a link to tools that can help you create a class diagram: [Class Resources: Class Design Tools](https://github.com/CS5004-khoury-lionelle/Resources?tab=readme-ov-file#uml-design-tools)
+Place your class diagram below. Make sure you check the fill in the browser on github.com to make sure it is rendering correctly. If it is not, you will need to fix it. As a reminder, here is a link to tools that can help you create a class diagram: [Class Resources: Class Design Tools](https://github.com/CS5004-khoury-lionelle/Resources?tab=readme-ov-file#uml-design-tools)
+
+```mermaid
+classDiagram
+    
+    IEmployee --> IPayStub
+    Builder ..|> IEmployee
+    Builder ..|> ITimeCard
+    PayrollGenerator ..|> IEmployee
+    PayrollGenerator ..|> IPayStub
+    PayrollGenerator ..|> ITimeCard
+    PayrollGenerator -- Argument : +Innerclass
+
+    class IPayStub {
+        <<interface>>
+        +getPay() double
+        +getTaxesPaid() double
+        +toCSV() String
+    }
+    
+    class IEmployee {
+        <<interface>>
+        +getEmployeeType() String
+        +getName() String
+        +getID() String
+        +getPayRate() double
+        +getPretaxDeductions() double
+        +getYTDEarnings() double
+        +getYTDTaxesPaid() double
+        +toCSV() String
+        IPayStub runPayroll(double hoursWorked)
+    }
+
+    class ITimeCard {
+        <<interface>>
+        +getEmployeeID() String
+        +getHoursWorked() double
+    }
+    
+    class Builder {
+        - Builder()
+        + IEmployee buildEmployeeFromCSV(String csv)
+        + ITimeCard buildTimeCardFromCSV(String csv)
+    }
+    class FileUtil {
+        + EMPLOYEE_HEADER: String
+        + PAY_STUB_HEADER: String
+        - FileUtil()
+        + readFileToList(String file): List<String>
+        + writeFile(String outFile, List<String> lines)
+        + writeFile(String outFile, List<String> lines, boolean backup)
+        
+    }
+    class PayrollGenerator {
+        + main(String[] args): void
+    }
+    class Argument {
+        + employeeFile: String 
+        + payrollFile: String
+        + timeCards: String
+        - Arguments()
+        + getEmployeeFile(): String
+        + getPayrollFile(): String
+        + getTimeCards(): String
+        + printHelp(): void
+        + process(String[] args): Arguments
+    }
+    
 
 
-
+```
 
 
 ## (INITIAL DESIGN): Tests to Write - Brainstorm
