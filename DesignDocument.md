@@ -6,7 +6,7 @@ This document is meant to provide a tool for you to demonstrate the design proce
 
 ## (INITIAL DESIGN): Class Diagram
 
-Place your class diagram below. Make sure you check the fill in the browser on github.com to make sure it is rendering correctly. If it is not, you will need to fix it. As a reminder, here is a link to tools that can help you create a class diagram: [Class Resources: Class Design Tools](https://github.com/CS5004-khoury-lionelle/Resources?tab=readme-ov-file#uml-design-tools)
+Place your class diagram below. Make sure you check the file in the browser on github.com to make sure it is rendering correctly. If it is not, you will need to fix it. As a reminder, here is a link to tools that can help you create a class diagram: [Class Resources: Class Design Tools](https://github.com/CS5004-khoury-lionelle/Resources?tab=readme-ov-file#uml-design-tools)
 
 ```mermaid
 classDiagram
@@ -21,21 +21,21 @@ classDiagram
 
     class IPayStub {
         <<interface>>
-        +getPay() double
-        +getTaxesPaid() double
-        +toCSV() String
+        +getPay(): double
+        +getTaxesPaid(): double
+        +toCSV(): String
     }
     
     class IEmployee {
         <<interface>>
-        +getEmployeeType() String
-        +getName() String
-        +getID() String
-        +getPayRate() double
-        +getPretaxDeductions() double
-        +getYTDEarnings() double
-        +getYTDTaxesPaid() double
-        +toCSV() String
+        +getEmployeeType(): String
+        +getName(): String
+        +getID(): String
+        +getPayRate(): double
+        +getPretaxDeductions(): double
+        +getYTDEarnings(): double
+        +getYTDTaxesPaid(): double
+        +toCSV(): String
         IPayStub runPayroll(double hoursWorked)
     }
 
@@ -91,13 +91,17 @@ Write a test (in english) that you can picture for the class diagram you have cr
 > 4. Refactor/update  as you go along
 > 5. Repeat steps 2-4 until you have all the tests passing/fully built program
 
-You should feel free to number your brainstorm. 
-
+You should feel free to number your brainstorm.
+(continue to add your brainstorm here (you don't need to super formal - this is a brainstorm) - yes, you can change the bullets above to something that fits your design.)
 1. Test that the `Employee` class properly returns `name` from `getName()`
 2. Test that the `Employee` class properly returns `id` from `getId()`
-3. continue to add your brainstorm here (you don't need to super formal - this is a brainstorm) - yes, you can change the bullets above to something that fits your design.
-
-
+3. Test that the `Employee` class properly returns `employeeType` from `getEmployeeType()`
+4. Test that the `Employee` class properly returns `payRate` from `getPayRate()`
+5. Test that the `Employee` class properly returns `pretaxDeductions` from `getPretaxDeductions()`
+6. Test that the `Employee` class properly returns `YTDEarnings` from `getYTDEarnings()`
+7. Test that the `Employee` class properly returns `YTDTaxesPaid` from `getYTDTaxesPaid()`
+8. Test  +toCSV(): String?
+9. 
 
 ## (FINAL DESIGN): Class Diagram
 

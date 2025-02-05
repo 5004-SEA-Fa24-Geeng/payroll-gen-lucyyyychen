@@ -69,6 +69,11 @@ public final class PayrollGenerator {
         // as it is invalid, but if is 0, you still generate a paystub, but the amount is 0.
 
         //YOUR CODE HERE
+        // 1. looping through the timeCardList and for each timecard
+        for (int i = 0; i < timeCardList.size(); i++) {
+            // find the matching employee and generate a new paystub object.
+
+        }
       
 
          // now save out employees to a new file
