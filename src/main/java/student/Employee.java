@@ -1,7 +1,7 @@
 package student;
 
 public abstract class Employee implements IEmployee {
-    private String employeeType;
+    private final String employeeType;
     private String name;
     private String ID;
     private double payRate;
@@ -54,7 +54,6 @@ public abstract class Employee implements IEmployee {
     /**
      * Gets the employee's Type as a string.
      * Either "HOURLY" or "SALARY" depending on the type of employee.
-     *
      * You may want to consider using an enum to store
      * the type, and using .name() to get the string representation.
      *

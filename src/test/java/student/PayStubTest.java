@@ -9,6 +9,9 @@ class PayStubTest {
 
     @BeforeEach
     void setUp() {
+//        PayStub(String name, String ID, double grossPay, double netPay,
+//        double tax, double YTDEarnings, double YTDTaxesPaid)
+
     }
 
     @Test

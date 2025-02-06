@@ -17,9 +17,9 @@ class EmployeeTest {
 //        SALARY,Nami,s193,200000,1000,17017,4983
 
         Luffy = new HourlyEmployee("Luffy", "s192", 30.00,
-                "HOURLY", 20000, 4530, 0);
+                20000, 4530, 0);
         Nami = new SalaryEmployee("Nami", "s193",200000,
-                "SALARY", 17017,4983,1000);
+                17017,4983,1000);
 
     }
 
@@ -65,9 +65,36 @@ class EmployeeTest {
         assertEquals(4983, Nami.getYTDTaxesPaid());
     }
 
-//    @Test
-//    void runPayroll() {
-//    }
+    @Test
+    void testHourlyEmployeeNoOvertime() {
+        IPayStub payStub = Luffy.runPayroll(40);
+        assertNotNull(payStub);
+    }
+
+    @Test
+    void testHourlyEmployeeWithOvertime() {
+        IPayStub payStub = Luffy.runPayroll(50);
+        assertNotNull(payStub);
+        // getPayRate() * ( NORMAL_HOURS + OT_BONUS_RATE * (hoursWorked - NORMAL_HOURS) );
+//        int NORMAL_HOURS = 40;
+//        double OT_BONUS_RATE = 1.5;
+//        double expectedGrossPay = 30.00 * ( NORMAL_HOURS + OT_BONUS_RATE * (50 - NORMAL_HOURS) );
+//        double expectedNetPayBeforeTax = expectedGrossPay - 0;
+//        double expectedTax = expectedNetPayBeforeTax * 0.2265;
+//        double expectedNetPayAfterTax = expectedNetPayBeforeTax - expectedTax;
+//        double expectedTaxesPaid = Luffy.getYTDTaxesPaid() + expectedTax; // this.YTDTaxesPaid += tax;
+
+//        assertEquals(expectedNetPayAfterTax, payStub.getPay());
+//        assertEquals(expectedTaxesPaid, payStub.getTaxesPaid());
+//        assertEquals(, payStub.toCSV());
+    }
+
+    @Test
+    void testSalaryEmployee() {
+        IPayStub payStub = Nami.runPayroll(0);
+        assertNotNull(payStub);
+    }
+
 
     @Test
     void toCSV() {

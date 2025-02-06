@@ -1,10 +1,10 @@
 package student;
 
 public class SalaryEmployee extends Employee {
-    public SalaryEmployee(String name, String ID, double payRate, String employeeType,
+    public SalaryEmployee(String name, String ID, double payRate,
                           double YTDEarnings, double YTDTaxesPaid, double pretaxDeductions) {
         //  call to the constructor of the parent class
-        super(name, ID, payRate, employeeType, YTDEarnings, YTDTaxesPaid, pretaxDeductions);
+        super(name, ID, payRate, "SALARY", YTDEarnings, YTDTaxesPaid, pretaxDeductions);
     }
 
     @Override

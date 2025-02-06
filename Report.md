@@ -4,10 +4,15 @@ This report helps you demonstrate your understanding of the concepts. You should
 
 ## Technical Questions
 
-1. What does CSV stand for? 
-   
+1. What does CSV stand for?
+    1. comma-separated values.
 
 2. Why would you declare `List<IEmployee>` instead of `ArrayList<HourlyEmployee>`?
+   1. List is an interface. ArrayList is a class which can implement a List.
+   2. There are many methods that can implement a List, such as ArrayList, LinkedList
+   3. To leverage the flexibility of a List while specifying an arrayList / LinkedList , we can declare 
+      1. `List<Integer> list = new ArrayList<>();`
+      2. `List<String> list = new LinkedList<String>(100);`
 
 3. When you have one class referencing another object, such as storing that object as one of the attributes of the first class - what type of relationship is that called (between has-a and is-a)?
 
