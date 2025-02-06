@@ -1,6 +1,6 @@
 package student;
 
-class Employee implements IEmployee {
+public abstract class Employee implements IEmployee {
     private String employeeType;
     private String name;
     private String ID;
@@ -9,8 +9,8 @@ class Employee implements IEmployee {
     private double YTDEarnings;
     private double YTDTaxesPaid;
 
-    public Employee (String employeeType, String name, String ID,
-                     double payRate, double pretaxDeductions, double YTDEarnings, double YTDTaxesPaid) {
+    public Employee (String name, String ID, double payRate, String employeeType,
+                     double YTDEarnings, double YTDTaxesPaid, double pretaxDeductions) {
         this.employeeType = employeeType;
         this.name = name;
         this.ID = ID;
@@ -53,7 +53,6 @@ class Employee implements IEmployee {
 
     /**
      * Gets the employee's Type as a string.
-     *
      * Either "HOURLY" or "SALARY" depending on the type of employee.
      *
      * You may want to consider using an enum to store
@@ -68,7 +67,6 @@ class Employee implements IEmployee {
 
     /**
      * Gets the YTD earnings of the employee.
-     *
      * @return the YTD earnings of the employee
      */
     @Override
@@ -78,7 +76,6 @@ class Employee implements IEmployee {
 
     /**
      * Gets the YTD taxes paid by the employee.
-     *
      * @return the YTD taxes paid by the employee
      */
     @Override
@@ -89,7 +86,6 @@ class Employee implements IEmployee {
     /**
      * Gets pretax deductions for the employee. Yes, on a normal paycheck this varies as either set
      * amounts or percents, and often more than one type of deduction.
-     *
      * For now, you can just assume a single pretax deduction as a whole dollar amount.
      *
      * @return the pretax deductions for the employee
@@ -99,29 +95,45 @@ class Employee implements IEmployee {
         return this.pretaxDeductions;
     }
 
+    // create an protected abstract calculateGrossPay(double hoursWorked)
+    //     * method to calculate the gross pay for the pay period, as runPayroll is exactly
+    //     * the same for both SalaryEmployee and HourlyEmployee, but calculateGrossPay is different.
+    protected abstract double calculateGrossPay(double hoursWorked);
+
 
     /**
-     *
      * @param hoursWorked the hours worked for the pay period
-     *
-     * @return the pay stub for the current pay period
+     * @return the pay stub for the current pay period, update the YTD earnings, and update the taxes paid YTD.
      */
     @Override
     public IPayStub runPayroll(double hoursWorked) {
-        return ;
-    }
+        double TAX_RATE = 0.2265;
 
+        // If either type of employee has < 0 hours, they are skipped this payroll period.
+        if (hoursWorked < 0) {
+            return null;
+        }
+
+        // Call the protected abstract method to calculate gross pay
+        double grossPay = calculateGrossPay(hoursWorked);
+
+        // calculate Net Pay and Tax
+        double netPayBeforeTax = grossPay - this.pretaxDeductions;
+        double tax = netPayBeforeTax * TAX_RATE;
+        double netPayAfterTax = netPayBeforeTax - tax;
+
+        // update the YTD earnings and the taxes paid YTD
+        this.YTDEarnings += grossPay;
+        this.YTDTaxesPaid += tax;
+
+        // create and return the pay stub
+        return new PayStub(this.name, this.ID, grossPay, netPayAfterTax, tax, this.YTDEarnings, this.YTDTaxesPaid);
+    }
 
     /**
      * Converts the employee to a CSV string.
-     *
      * Format of the String s as follows:
-     *
      * employee_type,name,ID,payRate,pretaxDeductions,YTDEarnings,YTDTaxesPaid
-     *
-     * employee_type has the options for HOURLY or SALARY.
-     *
-     * You do not have to worry about commas in the name or any other field.
      *
      * @return the employee as a CSV string
      */
@@ -130,4 +142,5 @@ class Employee implements IEmployee {
         return this.employeeType + "," + this.name + "," + this.ID + "," + this.payRate + ","
                 + this.pretaxDeductions + "," + this.YTDEarnings + "," + this.YTDTaxesPaid + ",";
     }
+
 }

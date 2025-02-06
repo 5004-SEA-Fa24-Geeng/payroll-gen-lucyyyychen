@@ -101,7 +101,7 @@ You should feel free to number your brainstorm.
 6. Test that the `Employee` class properly returns `YTDEarnings` from `getYTDEarnings()`
 7. Test that the `Employee` class properly returns `YTDTaxesPaid` from `getYTDTaxesPaid()`
 8. Test  +toCSV(): String?
-9. 
+9. Test runPayroll
 
 ## (FINAL DESIGN): Class Diagram
 
