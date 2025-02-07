@@ -1,5 +1,8 @@
 package student;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public abstract class Employee implements IEmployee {
     private final String employeeType;
     private String name;
@@ -14,10 +17,21 @@ public abstract class Employee implements IEmployee {
         this.employeeType = employeeType;
         this.name = name;
         this.ID = ID;
-        this.payRate = payRate;
-        this.pretaxDeductions = pretaxDeductions;
-        this.YTDEarnings = YTDEarnings;
-        this.YTDTaxesPaid = YTDTaxesPaid;
+        this.payRate = roundToTwoDecimals(payRate);
+        this.pretaxDeductions = roundToTwoDecimals(pretaxDeductions);
+        this.YTDEarnings = roundToTwoDecimals(YTDEarnings);
+        this.YTDTaxesPaid = roundToTwoDecimals(YTDTaxesPaid);
+    }
+
+    /**
+     * Sets a double value to two decimal places.
+     *
+     * @param value a number of type double
+     * @return a double value to two decimal places
+     * */
+    protected double roundToTwoDecimals(double value) {
+        BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     /**
@@ -114,16 +128,16 @@ public abstract class Employee implements IEmployee {
         }
 
         // Call the protected abstract method to calculate gross pay
-        double grossPay = calculateGrossPay(hoursWorked);
+        double grossPay = roundToTwoDecimals(calculateGrossPay(hoursWorked));
 
         // calculate Net Pay and Tax
-        double netPayBeforeTax = grossPay - this.pretaxDeductions;
-        double tax = netPayBeforeTax * TAX_RATE;
-        double netPayAfterTax = netPayBeforeTax - tax;
+        double netPayBeforeTax = roundToTwoDecimals(grossPay - this.pretaxDeductions);
+        double tax = roundToTwoDecimals(netPayBeforeTax * TAX_RATE);
+        double netPayAfterTax = roundToTwoDecimals(netPayBeforeTax - tax);
 
         // update the YTD earnings and the taxes paid YTD
-        this.YTDEarnings += netPayAfterTax;
-        this.YTDTaxesPaid += tax;
+        this.YTDEarnings = roundToTwoDecimals(this.YTDEarnings + netPayAfterTax);
+        this.YTDTaxesPaid = roundToTwoDecimals(this.YTDTaxesPaid + tax);
 
         // create and return the pay stub
         return new PayStub(this.name, this.ID, grossPay, netPayAfterTax, tax, this.YTDEarnings, this.YTDTaxesPaid);
@@ -139,7 +153,7 @@ public abstract class Employee implements IEmployee {
     @Override
     public String toCSV() {
         return this.employeeType + "," + this.name + "," + this.ID + "," + this.payRate + ","
-                + this.pretaxDeductions + "," + this.YTDEarnings + "," + this.YTDTaxesPaid + ",";
+                + this.pretaxDeductions + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
     }
 
 }

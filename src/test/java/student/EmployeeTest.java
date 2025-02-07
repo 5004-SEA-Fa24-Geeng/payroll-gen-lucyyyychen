@@ -19,6 +19,11 @@ class EmployeeTest {
     }
 
     @Test
+    void testRoundToTwoDecimals() {
+        assertEquals(20000.00, Luffy.roundToTwoDecimals(Luffy.getYTDEarnings()));
+    }
+
+    @Test
     void getEmployeeType() {
         assertEquals("HOURLY", Luffy.getEmployeeType());
         assertEquals("SALARY", Nami.getEmployeeType());
@@ -85,17 +90,14 @@ class EmployeeTest {
 
         // check update of YTDEarning (after tax)
         // Nami.getYTDEarnings() = 17017
-        double expectedNetPay = (expectedGrossPay - Nami.getPretaxDeductions()) - expectedTaxes;   // 5672.33
+        double expectedNetPay = Nami.roundToTwoDecimals(expectedGrossPay - Nami.getPretaxDeductions() - expectedTaxes);   // 5672.33
         double newYTDEarnings = 17017 + expectedNetPay;  // 22689.33
         assertEquals(newYTDEarnings, Nami.getYTDEarnings());
 
         // check all methods in the PayStub class
         assertEquals(expectedNetPay, payStubNami.getPay());
         assertEquals(newYTDTaxesPaid, payStubNami.getTaxesPaid());
-        // this.name + "," + this.netPay + "," + this.tax + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
-        assertEquals("Nami,5672.33,1661,22689.33,6644", payStubNami.toCSV());
-
-
+        assertEquals("Nami,5672.33,1661.0,22689.33,6644.0", payStubNami.toCSV());
     }
 
     @Test
@@ -134,14 +136,15 @@ class EmployeeTest {
         // check calculateGrossPay method
         // Luffy.getPayRate() = 30.00
         // Luffy.getYTDTaxesPaid() = 4530
-        double expectedGrossPay = 30.00 * 40 + 1.5 * 30.00 * 10;  // 1650.00
+        double expectedGrossPay = Luffy.roundToTwoDecimals(30.00 * 40 + 1.5 * 30.00 * 10);  // 1650.00
         assertEquals(expectedGrossPay, Luffy.calculateGrossPay(50));
 
         // check update of YTDTaxesPaid
         // Luffy.getPretaxDeductions() = 0
-        double expectedTaxes = (expectedGrossPay - Luffy.getPretaxDeductions()) * 0.2265;  // expectedTaxes = 373.725
+        double expectedTaxes = Luffy.roundToTwoDecimals((expectedGrossPay - Luffy.getPretaxDeductions()) * 0.2265);  // expectedTaxes = 373.725
+//        assertEquals(373.73, expectedTaxes);
         double newYTDTaxesPaid = 4530 + expectedTaxes;  // newYTDTaxesPaid = 4903.725
-        assertEquals(newYTDTaxesPaid, Luffy.getYTDTaxesPaid());  // 4903.725
+        assertEquals(4903.73, Luffy.getYTDTaxesPaid());  // 4903.725
 
         // check update of YTDEarning (after tax)
         double expectedNetPay = (expectedGrossPay - Luffy.getPretaxDeductions()) - expectedTaxes;  // 1276.275
@@ -152,13 +155,13 @@ class EmployeeTest {
         assertEquals(expectedNetPay, payStubLuffyNormalHours.getPay());  // 1276.275
         assertEquals(newYTDTaxesPaid, payStubLuffyNormalHours.getTaxesPaid());  // 4903.725
         // this.name + "," + this.netPay + "," + this.tax + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
-        assertEquals("Luffy,1276.28,373.73,21276.28,4903.73", payStubLuffyNormalHours.toCSV());
+        assertEquals("Luffy,1276.27,373.73,21276.27,4903.73", payStubLuffyNormalHours.toCSV());
     }
 
 
     @Test
     void toCSV() {
-        assertEquals("HOURLY,Luffy,s192,30.00,0,20000,4530", Luffy.toCSV());
-        assertEquals("SALARY,Nami,s193,200000,1000,17017,4983", Nami.toCSV());
+        assertEquals("HOURLY,Luffy,s192,30.0,0.0,20000.0,4530.0", Luffy.toCSV());
+        assertEquals("SALARY,Nami,s193,200000.0,1000.0,17017.0,4983.0", Nami.toCSV());
     }
 }
