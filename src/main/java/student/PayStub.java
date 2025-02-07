@@ -43,6 +43,6 @@ public class PayStub implements IPayStub {
      * @return the CSV string
      */
     public String toCSV() {
-        return this.netPay + "," + this.tax + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
+        return this.name + "," + this.netPay + "," + this.tax + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
     };
 }

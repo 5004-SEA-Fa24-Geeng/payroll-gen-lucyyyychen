@@ -11,11 +11,6 @@ class EmployeeTest {
 
     @BeforeEach
     void setUp() {
-//        <employees.csv>
-//        employee_type,name,ID,payRate,pretaxDeductions,YTDEarnings,YTDTaxesPaid
-//        HOURLY,Luffy,s192,30.00,0,20000,4530
-//        SALARY,Nami,s193,200000,1000,17017,4983
-
         Luffy = new HourlyEmployee("Luffy", "s192", 30.00,
                 20000, 4530, 0);
         Nami = new SalaryEmployee("Nami", "s193",200000,
@@ -38,7 +33,7 @@ class EmployeeTest {
     @Test
     void getID() {
         assertEquals("s192", Luffy.getID());
-        assertEquals("s193", Nami.getName());
+        assertEquals("s193", Nami.getID());
     }
 
     @Test
@@ -66,33 +61,98 @@ class EmployeeTest {
     }
 
     @Test
-    void testHourlyEmployeeNoOvertime() {
-        IPayStub payStub = Luffy.runPayroll(40);
-        assertNotNull(payStub);
-    }
-
-    @Test
-    void testHourlyEmployeeWithOvertime() {
-        IPayStub payStub = Luffy.runPayroll(50);
-        assertNotNull(payStub);
-        // getPayRate() * ( NORMAL_HOURS + OT_BONUS_RATE * (hoursWorked - NORMAL_HOURS) );
-//        int NORMAL_HOURS = 40;
-//        double OT_BONUS_RATE = 1.5;
-//        double expectedGrossPay = 30.00 * ( NORMAL_HOURS + OT_BONUS_RATE * (50 - NORMAL_HOURS) );
-//        double expectedNetPayBeforeTax = expectedGrossPay - 0;
-//        double expectedTax = expectedNetPayBeforeTax * 0.2265;
-//        double expectedNetPayAfterTax = expectedNetPayBeforeTax - expectedTax;
-//        double expectedTaxesPaid = Luffy.getYTDTaxesPaid() + expectedTax; // this.YTDTaxesPaid += tax;
-
-//        assertEquals(expectedNetPayAfterTax, payStub.getPay());
-//        assertEquals(expectedTaxesPaid, payStub.getTaxesPaid());
-//        assertEquals(, payStub.toCSV());
+    void testNegativeHours() {
+        IPayStub payStubNami = Nami.runPayroll(-10);
+        assertNull(payStubNami);
     }
 
     @Test
     void testSalaryEmployee() {
-        IPayStub payStub = Nami.runPayroll(0);
-        assertNotNull(payStub);
+        IPayStub payStubNami = Nami.runPayroll(0);
+        assertNotNull(payStubNami);
+
+        // check calculateGrossPay method
+        // Nami.getPayRate() = 200000
+        double expectedGrossPay = Nami.getPayRate() / 24; // 8333.33
+        assertEquals(expectedGrossPay, Nami.calculateGrossPay(0));
+
+        // update YTDTaxesPaid
+        // Nami.getPretaxDeductions() = 1000;
+        // Nami.getYTDTaxesPaid() = 4983
+        double expectedTaxes = (expectedGrossPay - Nami.getPretaxDeductions()) * 0.2265;  // 1661
+        double newYTDTaxesPaid = 4983 + expectedTaxes;  // 6644
+        assertEquals(newYTDTaxesPaid, Nami.getYTDTaxesPaid());
+
+        // check update of YTDEarning (after tax)
+        // Nami.getYTDEarnings() = 17017
+        double expectedNetPay = (expectedGrossPay - Nami.getPretaxDeductions()) - expectedTaxes;   // 5672.33
+        double newYTDEarnings = 17017 + expectedNetPay;  // 22689.33
+        assertEquals(newYTDEarnings, Nami.getYTDEarnings());
+
+        // check all methods in the PayStub class
+        assertEquals(expectedNetPay, payStubNami.getPay());
+        assertEquals(newYTDTaxesPaid, payStubNami.getTaxesPaid());
+        // this.name + "," + this.netPay + "," + this.tax + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
+        assertEquals("Nami,5672.33,1661,22689.33,6644", payStubNami.toCSV());
+
+
+    }
+
+    @Test
+    void testHourlyEmployeeNormalHours() {
+        IPayStub payStubLuffyNormalHours = Luffy.runPayroll(30);
+        assertNotNull(payStubLuffyNormalHours);
+
+        // check calculateGrossPay method
+        // Luffy.getPayRate() = 30.00
+        // Luffy.getYTDTaxesPaid() = 4530
+        double expectedGrossPay = 30.00 * 30;  // 900.00
+        assertEquals(expectedGrossPay, Luffy.calculateGrossPay(30));
+
+        // check update of YTDTaxesPaid
+        // Luffy.getPretaxDeductions() = 0
+        double expectedTaxes = (expectedGrossPay - Luffy.getPretaxDeductions()) * 0.2265;  // expectedTaxes = 203.85
+        double newYTDTaxesPaid = 4530 + expectedTaxes;  // newYTDTaxesPaid = 4733.85
+        assertEquals(newYTDTaxesPaid, Luffy.getYTDTaxesPaid());  // 4733.85
+
+        // check update of YTDEarning (after tax)
+        double expectedNetPay = (expectedGrossPay - Luffy.getPretaxDeductions()) - expectedTaxes;  // 696.15
+        double newYTDEarnings = 20000 + expectedNetPay;  // 20696.15
+        assertEquals(newYTDEarnings, Luffy.getYTDEarnings());  // 20696.15
+
+        // check all methods in the PayStub class
+        assertEquals(expectedNetPay, payStubLuffyNormalHours.getPay());  // 696.15
+        assertEquals(newYTDTaxesPaid, payStubLuffyNormalHours.getTaxesPaid());  // 4733.85
+        assertEquals("Luffy,696.15,203.85,20696.15,4733.85", payStubLuffyNormalHours.toCSV());
+    }
+
+    @Test
+    void testHourlyEmployeeOvertime() {
+        IPayStub payStubLuffyNormalHours = Luffy.runPayroll(50);
+        assertNotNull(payStubLuffyNormalHours);
+
+        // check calculateGrossPay method
+        // Luffy.getPayRate() = 30.00
+        // Luffy.getYTDTaxesPaid() = 4530
+        double expectedGrossPay = 30.00 * 40 + 1.5 * 30.00 * 10;  // 1650.00
+        assertEquals(expectedGrossPay, Luffy.calculateGrossPay(50));
+
+        // check update of YTDTaxesPaid
+        // Luffy.getPretaxDeductions() = 0
+        double expectedTaxes = (expectedGrossPay - Luffy.getPretaxDeductions()) * 0.2265;  // expectedTaxes = 373.725
+        double newYTDTaxesPaid = 4530 + expectedTaxes;  // newYTDTaxesPaid = 4903.725
+        assertEquals(newYTDTaxesPaid, Luffy.getYTDTaxesPaid());  // 4903.725
+
+        // check update of YTDEarning (after tax)
+        double expectedNetPay = (expectedGrossPay - Luffy.getPretaxDeductions()) - expectedTaxes;  // 1276.275
+        double newYTDEarnings = 20000 + expectedNetPay;  // 21276.275
+        assertEquals(newYTDEarnings, Luffy.getYTDEarnings());  // 21276.275
+
+        // check all methods in the PayStub class
+        assertEquals(expectedNetPay, payStubLuffyNormalHours.getPay());  // 1276.275
+        assertEquals(newYTDTaxesPaid, payStubLuffyNormalHours.getTaxesPaid());  // 4903.725
+        // this.name + "," + this.netPay + "," + this.tax + "," + this.YTDEarnings + "," + this.YTDTaxesPaid;
+        assertEquals("Luffy,1276.28,373.73,21276.28,4903.73", payStubLuffyNormalHours.toCSV());
     }
 
 

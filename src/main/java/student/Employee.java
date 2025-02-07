@@ -122,7 +122,7 @@ public abstract class Employee implements IEmployee {
         double netPayAfterTax = netPayBeforeTax - tax;
 
         // update the YTD earnings and the taxes paid YTD
-        this.YTDEarnings += grossPay;
+        this.YTDEarnings += netPayAfterTax;
         this.YTDTaxesPaid += tax;
 
         // create and return the pay stub
